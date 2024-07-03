@@ -6,13 +6,10 @@ using UnityEngine.UI;
 
 public class DownGage : MonoBehaviour
 {
-    //[SerializeField]
-    //private Image GreenGauge;
     [SerializeField]
     private Image GreenGauge;
     private bool recFlg = true;
 
-    //private MoveCharacterAction player;
     private Tween greenGaugeTween;
     public UnityChanController time;
     float Dtime;
@@ -22,10 +19,6 @@ public class DownGage : MonoBehaviour
     {
         Dtime = time.DownTime;
         Mtime = time.DownMax;
-        /*if (recFlg && time.DownTime <= 10 && time.downCk)
-        {
-            StartCoroutine(DownRecover(1f));
-        }*/
     }
     public void GaugeDownImage(float reducationValue, float timeA = 1f)
     {
@@ -33,16 +26,10 @@ public class DownGage : MonoBehaviour
         {
             return;
         }
-        /*
-        var valueFrom = (Dtime - reducationValue) / Mtime;
-        var valueTo =  Dtime / Mtime;
-        */
         var valueFrom = (Dtime - 1) / Mtime;
         var valueTo = (Dtime - reducationValue - 1) / Mtime;
 
         // 緑ゲージ減少
-        //GreenGauge.fillAmount = valueTo;
-
         if (greenGaugeTween != null)
         {
             greenGaugeTween.Kill();

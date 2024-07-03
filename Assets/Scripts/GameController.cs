@@ -43,16 +43,22 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
+        //ビームリスト作成
         beemsArray = new List<int>();
+
+        //キャラクター情報取得
         rb2d = unityChan.GetComponent<Rigidbody2D>();
         animator = unityChan.GetComponent<Animator>();
         UnityState = CharaState.Stop;
+
+        //ビーム作成
         beemsCount = beems.Length - 1;
         for(int i = 0; i <= beemsCount; i++)
         {
             beems[i].enabled = false;
             beemsArray.Add(i);
         }
+        //初期化
         score = 0;
         life = unity.maxLife;
         lifetext.text = "Life : " + life;
@@ -60,7 +66,6 @@ public class GameController : MonoBehaviour
         playerGage = GameObject.FindObjectOfType<PlayerGauge>();
         playerGage.SetPlayer(unity);
         downGage = GameObject.FindObjectOfType<DownGage>();
-        //downGage.SetPlayer(unity);
         audioSource = GetComponent<AudioSource>();
         titleBtn.SetActive(false);
     }
@@ -70,6 +75,7 @@ public class GameController : MonoBehaviour
     {
         if (life > 0)
         {
+            //スピードによりキャラクターの走る歩く止まるの処理を変更
             if (speed.IsSpeed() >= 8)
             {
                 UnityState = CharaState.Run;
@@ -82,14 +88,16 @@ public class GameController : MonoBehaviour
             {
                 UnityState = CharaState.Stop;
             }
-
+            
+            //ビーム処理
             StartCoroutine(BeemsStart());
+
+            //スコア更新
             if (scFlg)
             {
                 StartCoroutine(ScoreUp());
             }
             beems[0].enabled = true;
-            //ApplyAngle();
             scoretext.text = "Score : " + score;
         }
         else
@@ -97,6 +105,7 @@ public class GameController : MonoBehaviour
             speed.gameover = false;
         }
 
+        //処理フラグ更新
         switch (UnityState)
         {
             case CharaState.Walk:
@@ -115,6 +124,7 @@ public class GameController : MonoBehaviour
 
     void LateUpdate()
     {
+        //ライフ更新
         life = unity.life;
     }
 
