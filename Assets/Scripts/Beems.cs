@@ -8,6 +8,9 @@ public class Beems : MonoBehaviour
     public ScrollObject transformy;
     public float startPosition;
 
+    /// <summary>
+    /// ビームスクロールエンド更新処理
+    /// </summary>
     public void OnScrollEnd()
     {
         Vector3 restartPosition = transform.position;

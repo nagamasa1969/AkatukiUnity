@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using NCMB;
-
+using unityroom.Api;
 
 public class GameController : MonoBehaviour
 {
@@ -41,24 +40,21 @@ public class GameController : MonoBehaviour
 
     CharaState UnityState;
 
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     void Awake()
     {
-        //ビームリスト作成
         beemsArray = new List<int>();
-
-        //キャラクター情報取得
         rb2d = unityChan.GetComponent<Rigidbody2D>();
         animator = unityChan.GetComponent<Animator>();
         UnityState = CharaState.Stop;
-
-        //ビーム作成
         beemsCount = beems.Length - 1;
         for(int i = 0; i <= beemsCount; i++)
         {
             beems[i].enabled = false;
             beemsArray.Add(i);
         }
-        //初期化
         score = 0;
         life = unity.maxLife;
         lifetext.text = "Life : " + life;
@@ -66,16 +62,19 @@ public class GameController : MonoBehaviour
         playerGage = GameObject.FindObjectOfType<PlayerGauge>();
         playerGage.SetPlayer(unity);
         downGage = GameObject.FindObjectOfType<DownGage>();
+        //downGage.SetPlayer(unity);
         audioSource = GetComponent<AudioSource>();
         titleBtn.SetActive(false);
     }
 
     // Update is called once per frame
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     void Update()
     {
         if (life > 0)
         {
-            //スピードによりキャラクターの走る歩く止まるの処理を変更
             if (speed.IsSpeed() >= 8)
             {
                 UnityState = CharaState.Run;
@@ -88,16 +87,14 @@ public class GameController : MonoBehaviour
             {
                 UnityState = CharaState.Stop;
             }
-            
-            //ビーム処理
-            StartCoroutine(BeemsStart());
 
-            //スコア更新
+            StartCoroutine(BeemsStart());
             if (scFlg)
             {
                 StartCoroutine(ScoreUp());
             }
             beems[0].enabled = true;
+            //ApplyAngle();
             scoretext.text = "Score : " + score;
         }
         else
@@ -105,7 +102,6 @@ public class GameController : MonoBehaviour
             speed.gameover = false;
         }
 
-        //処理フラグ更新
         switch (UnityState)
         {
             case CharaState.Walk:
@@ -122,18 +118,27 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 更新処理（UPDATE後）
+    /// </summary>
     void LateUpdate()
     {
-        //ライフ更新
         life = unity.life;
     }
 
+    /// <summary>
+    /// スピード処理
+    /// </summary>
     void ApplyAngle()
     {
         float targetAngle = Mathf.Atan2(rb2d.velocity.y, speed.speed) * Mathf.Rad2Deg;
         
     }
 
+    /// <summary>
+    /// ビーム処理
+    /// </summary>
+    /// <returns></returns>
     IEnumerator BeemsStart()
     {
         float second = Random.Range(1, 20);
@@ -142,6 +147,10 @@ public class GameController : MonoBehaviour
         beems[beemEnable].enabled = true;
     }
 
+    /// <summary>
+    /// スコアUP処理
+    /// </summary>
+    /// <returns>子ルーチン処理</returns>
     IEnumerator ScoreUp()
     {
         scFlg = false;
@@ -151,6 +160,9 @@ public class GameController : MonoBehaviour
         scFlg = true;
     }
 
+    /// <summary>
+    /// スピードダウン処理
+    /// </summary>
     void SpeedDown()
     {
         speed.speed -= 5;
@@ -160,12 +172,17 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ダメージ処理
+    /// </summary>
+    /// <param name="power">ダメージ量</param>
     public void Damage(float power)
     {
         playerGage.GaugeReduction(power);
         life -= power;
         lifetext.text = "Life : " + life;
         audioSource.PlayOneShot(sound1);
+        //キャラのHPが無くなった時の対応
         if(life <= 0){
             UnityState = CharaState.Stop;
             adBgm.Stop();
@@ -174,15 +191,25 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ゲージ処理
+    /// </summary>
+    /// <param name="Time"></param>
     public void GageDown(float Time)
     {
         downGage.GaugeDownImage(Time);
     }
 
+    /// <summary>
+    /// ゲームオーバー処理
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EndTime()
     {
         yield return new WaitForSeconds(1f);
-        naichilab.RankingLoader.Instance.SendScoreAndShowRanking(score);
+        //naichilab.RankingLoader.Instance.SendScoreAndShowRanking(score);
+        // スコアボードに送信処理。
+        UnityroomApiClient.Instance.SendScore(1, (float)score, ScoreboardWriteMode.HighScoreDesc);
         titleBtn.SetActive(true);
     }
 }

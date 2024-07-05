@@ -11,12 +11,18 @@ public class UnityChanController : MonoBehaviour
     public float DownTime = 10;
     public bool downCk;
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
     void Start()
     {
         downCk = true;
         gameScript = gameControll.GetComponent<GameController>();
     }
 
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     void Update()
     {
         if(DownTime == 0)
@@ -28,11 +34,18 @@ public class UnityChanController : MonoBehaviour
             unityMove.downCk = true;
         }
     }
+
+    /// <summary>
+    /// ライフチェック
+    /// </summary>
     void LifeCheck()
     {
         gameScript.Damage(1f);
     }
 
+    /// <summary>
+    /// ダウンフラグ処理
+    /// </summary>
     void DownCheck()
     {
         if (downCk && DownTime != 0)
@@ -41,6 +54,10 @@ public class UnityChanController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ダウン時間処理
+    /// </summary>
+    /// <returns>ダウンフラグ</returns>
     IEnumerator DownTimeDown()
     {
         downCk = false;

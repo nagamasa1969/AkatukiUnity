@@ -14,11 +14,18 @@ public class ScrollObject : MonoBehaviour
     public bool gameover = true;
 
 
+    /// <summary>
+    /// スピード
+    /// </summary>
+    /// <returns></returns>
     public float IsSpeed()
     {
         return speed;
     }
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
     private void Start()
     {
         gameScript = gameControll.GetComponent<GameController>();
@@ -26,6 +33,9 @@ public class ScrollObject : MonoBehaviour
     }
 
     // Update is called once per frame
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     void Update()
     {
         if (gameover)
@@ -55,6 +65,9 @@ public class ScrollObject : MonoBehaviour
  
     }
 
+    /// <summary>
+    /// スクロールエンド処理
+    /// </summary>
     void ScrollEnd()
     {
         // 通り過ぎた分を加味してポジションを再設定
