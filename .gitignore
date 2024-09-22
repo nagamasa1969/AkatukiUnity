@@ -4,6 +4,7 @@
 #
 /Library/*
 !/Library/*asset
+!/Library/APIUpdater
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
